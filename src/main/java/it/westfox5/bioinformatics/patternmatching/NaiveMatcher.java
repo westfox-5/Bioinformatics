@@ -1,19 +1,20 @@
 package it.westfox5.bioinformatics.patternmatching;
 
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Stream;
 
-import it.westfox5.bioinformatics.utils.StringUtils;
-
+/**
+ * Basic implementation of a Pattern Searching algorithm.
+ * <br /><br />
+ *
+ */
 public class NaiveMatcher extends PatternMatcher {
-    @Override
-    public List<Integer> match(String text, String pattern) {
-        List<Integer> list = new ArrayList<>();
+    protected NaiveMatcher() { }
 
-        if (StringUtils.isEmpty(text) || StringUtils.isEmpty(pattern))
-            return list;
+    @Override
+    protected List<Integer> doMatchImpl(String text, String pattern) {
+        List<Integer> list = new ArrayList<>();
 
         int n = text.length();
         int m = pattern.length();

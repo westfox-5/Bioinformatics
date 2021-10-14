@@ -5,8 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Basic implementation of a Pattern Searching algorithm.
- * <br /><br />
+ * Naive implementation of a Pattern Searching algorithm.
  *
  */
 public class NaiveMatcher extends PatternMatcher {
@@ -14,11 +13,11 @@ public class NaiveMatcher extends PatternMatcher {
 
     @Override
     protected List<Integer> doMatchImpl(String text, String pattern) {
-        List<Integer> list = new ArrayList<>();
+        final List<Integer> list = new ArrayList<>();
 
-        int n = text.length();
-        int m = pattern.length();
-        for (int s=0; s<=n-m; s++) {
+        final int n = text.length();
+        final int m = pattern.length();
+        for (int s=0; s<=n-m; ++s) {
             String substring = text.substring(s, s+m);
             if (pattern.equals(substring)) {
                 list.add(s);

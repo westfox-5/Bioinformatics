@@ -19,4 +19,16 @@ public class StringUtils {
 
         return s.endsWith(suffix);
     }
+
+    public static String prefix(String text, Integer endIdx) {
+        if (isEmpty(text)) return "";
+
+        return text.substring(0, Math.min(endIdx+1, text.length()));
+    }
+
+    public static String suffix(String text, Integer beginIdx) {
+        if (isEmpty(text)) return "";
+
+        return text.substring(Math.max(beginIdx-1, 0));
+    }
 }

@@ -4,11 +4,11 @@ import it.westfox5.bioinformatics.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiFunction;
 
 public abstract class PatternMatcher {
     public static PatternMatcher naiveMatcher() { return new NaiveMatcher(); }
     public static PatternMatcher finiteAutomatonMatcher() { return new FiniteAutomatonMatcher(); }
+    public static PatternMatcher kmpMatcher() { return new KMPMatcher(); }
 
     /**
      * Specific business logic of each subclass.
@@ -26,10 +26,10 @@ public abstract class PatternMatcher {
      * @return list of starting indices of occurrences of pattern in text
      */
     public List<Integer> match(String text, String pattern) {
-        List<Integer> list = new ArrayList<>();
-
         if (StringUtils.isEmpty(text) || StringUtils.isEmpty(pattern))
-            return list;
+            return new ArrayList<>();
+
+        final List<Integer> list = new ArrayList<>();
 
         var occurrences = doMatchImpl(text, pattern);
         if (occurrences != null) {
@@ -37,5 +37,40 @@ public abstract class PatternMatcher {
         }
 
         return list;
+    }
+
+    /**
+     * Given a text, the value at pi[q] is the length of
+     * the longest prefix of P which is also a suffix of Pq.
+     * <br /><br />
+     * Invariant: pi[k] < k with k>0 and k<q
+     * <br />
+     * Complexity: O(m) since the for-loop body has an amortized cost which is constant
+     *
+     * @param text
+     * @return The array representing the prefix function
+     */
+    protected static Integer[] computePrefixFunction(String text) {
+        if (StringUtils.isEmpty(text))
+            return new Integer[]{};
+
+        final int m = text.length();
+        final Integer[] pi = new Integer[m];
+
+        pi[0] = 0;
+        int k = 0; // current prefix length
+
+        for (int q = 1; q<m; ++q) {
+            char textCharQ = text.charAt(q);
+            while (k>0 && text.charAt(k) != textCharQ) // mismatch
+                k = pi[k-1];
+
+            if (text.charAt(k) == textCharQ) // valid prefix
+                ++k;
+
+            pi[q] = k;
+        }
+
+        return pi;
     }
 }

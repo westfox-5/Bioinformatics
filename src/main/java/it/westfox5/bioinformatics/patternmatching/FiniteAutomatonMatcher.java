@@ -5,10 +5,9 @@ import it.westfox5.bioinformatics.utils.StringUtils;
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
- * This implementation utilizes the Finite Automaton model.
+ * Implementation of a pattern matching algorithm that uses the Finite Automaton model.
  * <br /> <br />
  * For now the F.A. is implemented through the transition function, which takes the current state and next token as input
  * and produces the next state reached by the automaton.
@@ -53,9 +52,9 @@ public class FiniteAutomatonMatcher extends PatternMatcher {
     protected static BiFunction<Integer, Character, Integer> computeTransitionFunction(String text, Set<Character> alphabet) {
         final Map<TransitionKey, Integer> transitionsMap = new HashMap<>();
 
+        final int m = text.length();
         int k;
-        int m = text.length();
-        for (int q=0; q<=m; q++) {
+        for (int q=0; q<=m; ++q) {
             for (Character a: alphabet) {
                 // start with an optimistic guess…
                 k = Math.min(m+1, q+2);
@@ -68,32 +67,30 @@ public class FiniteAutomatonMatcher extends PatternMatcher {
             }
         }
 
-        // BiFunction as lambda +
+        // BiFunction as lambda
         return (q, a) -> transitionsMap.get( TransitionKey.of(q,a) );
     }
 
     @Override
     protected List<Integer> doMatchImpl(String text, String pattern) {
-        List<Integer> list = new ArrayList<>();
+        final List<Integer> list = new ArrayList<>();
 
         // Pre-processing of the pattern
-        Set<Character> alphabet = text.chars()
+        final Set<Character> alphabet = text.chars()
                 .distinct()
                 .mapToObj(c -> (char) c)
                 .collect(Collectors.toSet());
 
         BiFunction<Integer, Character, Integer> transitionFn = computeTransitionFunction(pattern, alphabet);
 
-        int n = text.length();
-        int m = pattern.length();
+        final int n = text.length();
+        final int m = pattern.length();
 
-        // current state of the automaton
-        int q = 0;
-        for (int s=0; s<n; s++) {
+        int q = 0; // current state of the automaton
+        for (int s=0; s<n; ++s) {
             q = transitionFn.apply(q, text.charAt(s));
 
-            if (q == m) {
-                // last state of automaton reached
+            if (q == m) { // last state of automaton reached
                 // a match occurred m positions before the current shift s
                 list.add( s - m + 1 );
             }

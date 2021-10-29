@@ -50,7 +50,7 @@ public abstract class PatternMatcher {
      * @param text
      * @return The array representing the prefix function
      */
-    protected static Integer[] computePrefixFunction(String text) {
+    public static Integer[] computePrefixFunction(String text) {
         if (StringUtils.isEmpty(text))
             return new Integer[]{};
 

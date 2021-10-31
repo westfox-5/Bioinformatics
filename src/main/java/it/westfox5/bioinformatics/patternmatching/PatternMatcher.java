@@ -4,11 +4,14 @@ import it.westfox5.bioinformatics.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public abstract class PatternMatcher {
     public static PatternMatcher naiveMatcher() { return new NaiveMatcher(); }
     public static PatternMatcher finiteAutomatonMatcher() { return new FiniteAutomatonMatcher(); }
     public static PatternMatcher kmpMatcher() { return new KMPMatcher(); }
+    public static PatternMatcher bmMatcher() { return new BoyerMooreMatcher(); }
 
     /**
      * Specific business logic of each subclass.
@@ -47,10 +50,10 @@ public abstract class PatternMatcher {
      * <br />
      * Complexity: O(m) since the for-loop body has an amortized cost which is constant
      *
-     * @param text
+     * @param text text to compute prefix function on
      * @return The array representing the prefix function
      */
-    protected static Integer[] computePrefixFunction(String text) {
+    public static Integer[] computePrefixFunction(String text) {
         if (StringUtils.isEmpty(text))
             return new Integer[]{};
 
@@ -72,5 +75,12 @@ public abstract class PatternMatcher {
         }
 
         return pi;
+    }
+
+    protected Set<Character> getAlphabet(String text) {
+        return text.chars()
+                .distinct()
+                .mapToObj(c -> (char) c)
+                .collect(Collectors.toSet());
     }
 }

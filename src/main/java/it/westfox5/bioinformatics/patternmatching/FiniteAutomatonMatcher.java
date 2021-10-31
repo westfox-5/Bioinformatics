@@ -76,11 +76,7 @@ public class FiniteAutomatonMatcher extends PatternMatcher {
         final List<Integer> list = new ArrayList<>();
 
         // Pre-processing of the pattern
-        final Set<Character> alphabet = text.chars()
-                .distinct()
-                .mapToObj(c -> (char) c)
-                .collect(Collectors.toSet());
-
+        final Set<Character> alphabet = getAlphabet(text);
         BiFunction<Integer, Character, Integer> transitionFn = computeTransitionFunction(pattern, alphabet);
 
         final int n = text.length();
